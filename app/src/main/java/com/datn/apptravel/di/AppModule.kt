@@ -11,7 +11,7 @@ import com.datn.apptravel.ui.viewmodel.NotificationViewModel
 import com.datn.apptravel.ui.viewmodel.ProfileViewModel
 import com.datn.apptravel.ui.viewmodel.TripsViewModel
 import com.datn.apptravel.ui.viewmodel.AuthViewModel
-import com.datn.apptravel.ui.viewmodel.TripViewModel
+import com.datn.apptravel.ui.viewmodel.CreateTripViewModel
 import com.datn.apptravel.ui.viewmodel.TripDetailViewModel
 import com.datn.apptravel.ui.viewmodel.PlanViewModel
 import com.datn.apptravel.ui.viewmodel.FlightViewModel
@@ -25,6 +25,7 @@ import org.koin.dsl.module
 val appModule = module {
     // API Service
     single { RetrofitClient.createService<ApiService>() }
+    single { RetrofitClient.tripApiService }
     
     // Local storage
     single { SessionManager(androidContext()) }
@@ -32,6 +33,7 @@ val appModule = module {
     // Repositories - Firebase
     single { AuthRepository() }
     single { com.datn.apptravel.data.repository.PlacesRepository(get()) }
+    single { com.datn.apptravel.data.repository.TripRepository(get()) }
 
     
     // ViewModels
@@ -41,10 +43,10 @@ val appModule = module {
     viewModel { GuidesViewModel() }
     viewModel { NotificationViewModel() }
     viewModel { ProfileViewModel(get()) }
-    viewModel { TripsViewModel() }
+    viewModel { TripsViewModel(get(), get()) }
     viewModel { AuthViewModel(get()) }
-    viewModel { TripViewModel() }
-    viewModel { TripDetailViewModel() }
+    viewModel { CreateTripViewModel(get(), get()) }
+    viewModel { TripDetailViewModel(get()) }
     viewModel { PlanViewModel(get()) }
     viewModel { FlightViewModel() }
     viewModel { LodgingViewModel() }

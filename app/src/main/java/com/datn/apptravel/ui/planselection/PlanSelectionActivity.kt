@@ -5,17 +5,26 @@ import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.datn.apptravel.R
 import com.datn.apptravel.data.model.PlanType
+import com.datn.apptravel.data.model.response.MapPlace
 import com.datn.apptravel.databinding.ActivityPlanSelectionBinding
 import com.datn.apptravel.ui.viewmodel.PlanViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -138,6 +147,12 @@ class PlanSelectionActivity : AppCompatActivity() {
                 marker.snippet = place.address
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 
+                // Set click listener to show place detail popup
+                marker.setOnMarkerClickListener { clickedMarker, mapView ->
+                    showPlaceDetailPopup(place)
+                    true
+                }
+                
                 binding.mapView.overlays.add(marker)
             }
             
@@ -170,6 +185,53 @@ class PlanSelectionActivity : AppCompatActivity() {
             // Update UI or show current selection
             // Toast.makeText(this, "Selected: ${planType.displayName}", Toast.LENGTH_SHORT).show()
         }
+    }
+    
+    /**
+     * Show place detail popup with image, description and add button
+     */
+    private fun showPlaceDetailPopup(place: MapPlace) {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val view = LayoutInflater.from(this).inflate(R.layout.layout_place_detail_popup, null)
+        bottomSheetDialog.setContentView(view)
+        
+        // Find views
+        val tvPlaceName = view.findViewById<TextView>(R.id.tvPlaceName)
+        val tvPlaceDescription = view.findViewById<TextView>(R.id.tvPlaceDescription)
+        val imgGallery1 = view.findViewById<ImageView>(R.id.imgGallery1)
+        val imgGallery2 = view.findViewById<ImageView>(R.id.imgGallery2)
+        val btnAddPlace = view.findViewById<Button>(R.id.btnAddPlace)
+        
+        // Set place name
+        tvPlaceName.text = place.name
+        
+        // Set place description (use address if description is null)
+        tvPlaceDescription.text = place.description ?: place.address ?: "No description available"
+        
+        // Load gallery images
+        place.galleryImages?.let { images ->
+            if (images.isNotEmpty()) {
+                Glide.with(this)
+                    .load(images[0])
+                    .centerCrop()
+                    .into(imgGallery1)
+            }
+            if (images.size > 1) {
+                Glide.with(this)
+                    .load(images[1])
+                    .centerCrop()
+                    .into(imgGallery2)
+            }
+        }
+        
+        // Set add button click listener
+        btnAddPlace.setOnClickListener {
+            // TODO: Implement add place to trip logic
+            Toast.makeText(this, "Added ${place.name} to trip", Toast.LENGTH_SHORT).show()
+            bottomSheetDialog.dismiss()
+        }
+        
+        bottomSheetDialog.show()
     }
     
     /**

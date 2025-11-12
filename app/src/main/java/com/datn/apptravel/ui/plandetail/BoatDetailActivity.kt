@@ -97,8 +97,6 @@ class BoatDetailActivity : AppCompatActivity() {
             // Create boat details from form inputs
             val boatDetails = mapOf(
                 "boatName" to binding.etBoatName.text.toString(),
-                "coach" to binding.etCoach.text.toString(),
-                "seat" to binding.etSeat.text.toString(),
                 "departureTime" to binding.etDepartureTime.text.toString(),
                 "departureLocation" to binding.etDepartureLocation.text.toString(),
                 "arrivalTime" to binding.etArrivalTime.text.toString(),

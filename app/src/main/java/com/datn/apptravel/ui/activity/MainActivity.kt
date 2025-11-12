@@ -11,7 +11,6 @@ import com.datn.apptravel.ui.fragment.NotificationFragment
 import com.datn.apptravel.ui.fragment.ProfileFragment
 import com.datn.apptravel.ui.fragment.TripsFragment
 import com.datn.apptravel.ui.viewmodel.MainViewModel
-import com.datn.apptravel.util.TripManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
@@ -19,11 +18,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
     override val viewModel: MainViewModel by viewModel()
     
     private var currentTripsFragment: TripsFragment? = null
-    
-    companion object {
-        // Make TripManager accessible from other activities
-        val tripManager = TripManager()
-    }
     
     override fun getViewBinding(): ActivityMainBinding = 
         ActivityMainBinding.inflate(layoutInflater)

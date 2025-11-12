@@ -4,7 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.datn.apptravel.databinding.ItemTripBinding
-import com.datn.apptravel.util.Trip
+import com.datn.apptravel.data.model.Trip
+import java.text.NumberFormat
+import java.util.Locale
 
 class TripAdapter(
     private var trips: List<Trip>,
@@ -41,14 +43,13 @@ class TripAdapter(
         fun bind(trip: Trip) {
             binding.apply {
                 tvTripName.text = trip.title
-                tvTripDate.text = "${trip.startDate} - ${trip.endDate}"
+                tvTripStartDate.text = "Start: ${trip.startDate}"
+                tvTripEndDate.text = "End: ${trip.endDate}"
                 
-                // For the price, we'll just use a placeholder since Trip doesn't have a price field yet
-                tvTripPrice.text = "75.000.000đ"
-                
-                // Set image if available
-                // If trip has an image URL, load it with an image loader like Glide or Picasso
-                // For now, we'll use the placeholder
+                // TODO: Load cover photo if available
+                // Glide.with(binding.root.context)
+                //     .load(trip.coverPhoto)
+                //     .into(ivTripImage)
             }
         }
     }

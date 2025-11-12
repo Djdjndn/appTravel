@@ -35,7 +35,6 @@
                 android:id="@+id/tvTripName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Visit the Great Barrier Reef"
                 android:textColor="#111827"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -55,10 +54,9 @@
                     android:tint="#6B7280" />
 
                 <TextView
-                    android:id="@+id/tvTripDate"
+                    android:id="@+id/tvTripStartDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="14 - 15 July 2024"
                     android:textColor="#6B7280"
                     android:textSize="14sp" />
 
@@ -75,31 +73,19 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:layout_marginEnd="4dp"
-                    android:src="@drawable/ic_money"
+                    android:src="@drawable/ic_calendar"
                     android:tint="#6B7280" />
 
                 <TextView
-                    android:id="@+id/tvTripPrice"
+                    android:id="@+id/tvTripEndDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="75.000.000đ"
                     android:textColor="#6B7280"
                     android:textSize="14sp" />
 
             </LinearLayout>
 
         </LinearLayout>
-
-        <!-- Action Button -->
-        <ImageView
-            android:id="@+id/ivTripAction"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/trip_action_background"
-            android:padding="8dp"
-            android:src="@drawable/ic_bookmark"
-            android:tint="@android:color/white" />
 
     </LinearLayout>
 

@@ -2,20 +2,26 @@ package com.datn.apptravel.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.datn.apptravel.R
+import com.datn.apptravel.data.local.SessionManager
 import com.datn.apptravel.ui.activity.MainActivity
 import com.datn.apptravel.ui.viewmodel.AuthViewModel
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SignUpActivity : AppCompatActivity() {
     
     private val viewModel: AuthViewModel by viewModel()
+    private val sessionManager: SessionManager by inject()
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +32,12 @@ class SignUpActivity : AppCompatActivity() {
         
         // Observe sign up result
         viewModel.signUpResult.observe(this) { result ->
-            result.onSuccess {
+            result.onSuccess { user ->
+                // Save user ID to session
+                lifecycleScope.launch {
+                    sessionManager.saveUserId(user.id)
+                    Log.d("SignUpActivity", "User ID saved to session: ${user.id}")
+                }
                 Toast.makeText(this, "Sign up successful", Toast.LENGTH_SHORT).show()
                 navigateToMain()
             }.onFailure { error ->

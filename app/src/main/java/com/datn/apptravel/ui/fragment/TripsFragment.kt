@@ -121,9 +121,9 @@ class TripsFragment : BaseFragment<com.datn.apptravel.databinding.FragmentTripsB
     /**
      * Navigate to trip detail screen
      */
-    private fun navigateToTripDetail(trip: com.datn.apptravel.util.Trip) {
+    private fun navigateToTripDetail(trip: com.datn.apptravel.data.model.Trip) {
         val intent = Intent(requireContext(), com.datn.apptravel.ui.tripdetail.TripDetailActivity::class.java).apply {
-            putExtra(EXTRA_TRIP_ID, trip.id)
+            putExtra(EXTRA_TRIP_ID, trip.id.toString())
         }
         startActivity(intent)
     }

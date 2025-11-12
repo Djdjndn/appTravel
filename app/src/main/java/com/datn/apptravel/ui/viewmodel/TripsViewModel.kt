@@ -2,11 +2,17 @@ package com.datn.apptravel.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.datn.apptravel.ui.activity.MainActivity
+import androidx.lifecycle.viewModelScope
+import com.datn.apptravel.data.local.SessionManager
+import com.datn.apptravel.data.model.Trip
+import com.datn.apptravel.data.repository.TripRepository
 import com.datn.apptravel.ui.base.BaseViewModel
-import com.datn.apptravel.util.Trip
+import kotlinx.coroutines.launch
 
-class TripsViewModel : BaseViewModel() {
+class TripsViewModel(
+    private val tripRepository: TripRepository,
+    private val sessionManager: SessionManager
+) : BaseViewModel() {
     
     private val _trips = MutableLiveData<List<Trip>>()
     val trips: LiveData<List<Trip>> = _trips
@@ -14,12 +20,26 @@ class TripsViewModel : BaseViewModel() {
     fun getTrips() {
         setLoading(true)
         
-        // Simulate network call delay
-        android.os.Handler().postDelayed({
-            // Get trips from TripManager
-            val allTrips = MainActivity.tripManager.getAllTrips()
-            _trips.value = allTrips
-            setLoading(false)
-        }, 1000)
+        viewModelScope.launch {
+            try {
+                val userId = sessionManager.getUserId()
+                if (userId != null) {
+                    val result = tripRepository.getTripsByUserId(userId)
+                    result.onSuccess { tripList ->
+                        _trips.value = tripList
+                    }.onFailure { exception ->
+                        setError(exception.message ?: "Failed to load trips")
+                        _trips.value = emptyList()
+                    }
+                } else {
+                    _trips.value = emptyList()
+                }
+            } catch (e: Exception) {
+                setError(e.message ?: "An error occurred")
+                _trips.value = emptyList()
+            } finally {
+                setLoading(false)
+            }
+        }
     }
 }

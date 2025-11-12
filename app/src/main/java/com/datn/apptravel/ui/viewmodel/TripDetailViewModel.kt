@@ -2,16 +2,18 @@ package com.datn.apptravel.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.datn.apptravel.data.model.Trip
+import com.datn.apptravel.data.repository.TripRepository
 import com.datn.apptravel.ui.model.ScheduleActivity
 import com.datn.apptravel.ui.model.ScheduleDay
-import com.datn.apptravel.ui.activity.MainActivity
 import com.datn.apptravel.ui.base.BaseViewModel
-import com.datn.apptravel.util.Trip
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class TripDetailViewModel : BaseViewModel() {
+class TripDetailViewModel(private val tripRepository: TripRepository) : BaseViewModel() {
     
     // Trip details
     private val _tripDetails = MutableLiveData<Trip?>()
@@ -20,133 +22,52 @@ class TripDetailViewModel : BaseViewModel() {
     // Schedule days
     private val _scheduleDays = MutableLiveData<List<ScheduleDay>>()
     val scheduleDays: LiveData<List<ScheduleDay>> = _scheduleDays
+    
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> = _errorMessage
 
     fun getTripDetails(tripId: String) {
         setLoading(true)
         
-        // Simulated API call with delay
-        android.os.Handler().postDelayed({
-            // Get trip from TripManager
-            val allTrips = MainActivity.tripManager.getAllTrips()
-            val trip = allTrips.find { it.id == tripId } ?: allTrips.firstOrNull()
-            
-            _tripDetails.value = trip
-            
-            // Also generate some sample schedule days for this trip
-            generateSampleScheduleDays(trip)
-            
-            setLoading(false)
-        }, 1000)
+        viewModelScope.launch {
+            try {
+                if (tripId.isBlank()) {
+                    _errorMessage.value = "Invalid trip ID"
+                    setLoading(false)
+                    return@launch
+                }
+                
+                val result = tripRepository.getTripById(tripId)
+                
+                result.onSuccess { trip ->
+                    _tripDetails.value = trip
+                    // Generate schedule days from plans if available
+                    generateScheduleDaysFromTrip(trip)
+                }.onFailure { exception ->
+                    _errorMessage.value = exception.message ?: "Failed to load trip"
+                    _tripDetails.value = null
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = e.message ?: "An error occurred"
+                _tripDetails.value = null
+            } finally {
+                setLoading(false)
+            }
+        }
     }
 
-    private fun generateSampleScheduleDays(trip: Trip?) {
-        if (trip == null) {
+    private fun generateScheduleDaysFromTrip(trip: Trip) {
+        if (trip.plans.isNullOrEmpty()) {
             _scheduleDays.value = emptyList()
             return
         }
         
-        // Parse start date
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val startDate = try {
-            dateFormat.parse(trip.startDate)
-        } catch (e: Exception) {
-            Calendar.getInstance().time
-        }
-        
-        // Generate schedule days
+        // Group plans by date and create schedule days
         val scheduleDaysList = mutableListOf<ScheduleDay>()
         
-        // Day 1
-        val day1 = ScheduleDay(
-            dayNumber = 1,
-            title = "Arrival in ${trip.destination.split(",").firstOrNull() ?: trip.destination}",
-            date = trip.startDate,
-            activities = listOf(
-                ScheduleActivity(
-                    time = "10:00 AM",
-                    title = "Arrival at Airport",
-                    description = "Flight lands at main airport"
-                ),
-                ScheduleActivity(
-                    time = "12:00 PM",
-                    title = "Check-in at Hotel",
-                    description = "Hotel ${trip.destination}"
-                ),
-                ScheduleActivity(
-                    time = "2:00 PM",
-                    title = "Local Tour",
-                    description = "Guided tour of nearby attractions"
-                )
-            )
-        )
-        scheduleDaysList.add(day1)
-        
-        // Day 2
-        val day2 = ScheduleDay(
-            dayNumber = 2,
-            title = "Exploring ${trip.destination.split(",").firstOrNull() ?: trip.destination}",
-            date = getNextDay(trip.startDate, 1),
-            activities = listOf(
-                ScheduleActivity(
-                    time = "9:00 AM",
-                    title = "Breakfast at Hotel",
-                    description = "Continental breakfast included"
-                ),
-                ScheduleActivity(
-                    time = "10:30 AM",
-                    title = "Visit Main Attractions",
-                    description = "City landmarks tour"
-                ),
-                ScheduleActivity(
-                    time = "7:00 PM",
-                    title = "Dinner at Local Restaurant",
-                    description = "Experience local cuisine"
-                )
-            )
-        )
-        scheduleDaysList.add(day2)
-        
-        // Day 3
-        val day3 = ScheduleDay(
-            dayNumber = 3,
-            title = "Departure",
-            date = getNextDay(trip.startDate, 2),
-            activities = listOf(
-                ScheduleActivity(
-                    time = "8:00 AM",
-                    title = "Breakfast",
-                    description = "Last meal at hotel"
-                ),
-                ScheduleActivity(
-                    time = "10:00 AM",
-                    title = "Check-out",
-                    description = "Hotel ${trip.destination}"
-                ),
-                ScheduleActivity(
-                    time = "1:00 PM",
-                    title = "Departure from Airport",
-                    description = "Flight back home"
-                )
-            )
-        )
-        scheduleDaysList.add(day3)
-        
+        // TODO: Parse plans and organize into days
+        // For now, just create empty schedule
         _scheduleDays.value = scheduleDaysList
-    }
-
-    private fun getNextDay(dateString: String, daysToAdd: Int): String {
-        try {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val date = dateFormat.parse(dateString) ?: return dateString
-            
-            val calendar = Calendar.getInstance()
-            calendar.time = date
-            calendar.add(Calendar.DAY_OF_MONTH, daysToAdd)
-            
-            return dateFormat.format(calendar.time)
-        } catch (e: Exception) {
-            return dateString
-        }
     }
 
     fun updateTripDetails(tripId: String, updatedDetails: Map<String, Any>) {

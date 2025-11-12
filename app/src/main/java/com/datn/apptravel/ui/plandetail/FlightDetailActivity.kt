@@ -76,11 +76,6 @@ class FlightDetailActivity : AppCompatActivity() {
     }
     
     private fun setupTimePickers() {
-        // Check-in time picker
-        binding.etCheckInTime.setOnClickListener {
-            showTimePicker(binding.etCheckInTime)
-        }
-        
         // Arrival time picker
         binding.etArrivalTime.setOnClickListener {
             showTimePicker(binding.etArrivalTime)
@@ -123,12 +118,11 @@ class FlightDetailActivity : AppCompatActivity() {
             val flightDetails = mapOf(
                 "airline" to binding.etAirline.text.toString(),
                 "departureDate" to binding.etDepartureDate.text.toString(),
-                "departureTime" to binding.etCheckInTime.text.toString(),
+                "departureAddress" to binding.etAddress.text.toString(),
                 "arrivalDate" to binding.etArrivalDate.text.toString(),
                 "arrivalTime" to binding.etArrivalTime.text.toString(),
-                "expense" to binding.etExpense.text.toString().ifEmpty { "0" },
-                "terminal" to binding.etTerminal.text.toString(),
-                "gate" to binding.etGate.text.toString()
+                "arrivalAddress" to binding.etArrivalAddress.text.toString(),
+                "expense" to binding.etExpense.text.toString().ifEmpty { "0" }
             )
             
             viewModel.addFlightToTrip(id, flightDetails.toString())

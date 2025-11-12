@@ -109,5 +109,8 @@ data class MapPlace(
     val latitude: Double,
     val longitude: Double,
     val address: String?,
-    val category: String
+    val category: String,
+    val imageUrl: String? = null,
+    val description: String? = null,
+    val galleryImages: List<String>? = null
 )

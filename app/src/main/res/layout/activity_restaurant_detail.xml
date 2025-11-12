@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/beige_light"
-    tools:context=".ui.plandetail.FlightDetailActivity">
+    tools:context=".ui.plandetail.RestaurantDetailActivity">
 
     <!-- Top Navigation Bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,7 +36,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:gravity="center"
-            android:text="Flight"
+            android:text="Restaurant"
             android:textColor="#1F2937"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -74,22 +74,61 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-            <!-- Departure Date -->
+            <!-- Restaurant name -->
             <TextView
-                android:id="@+id/tvDepartureDate"
+                android:id="@+id/tvRestaurantName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Departure Date*"
+                android:text="Restaurant name"
                 android:textColor="#5D4E37"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/etDepartureDate"
+                android:id="@+id/etRestaurantName"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
+                android:background="@drawable/edit_text_background_beige"
+                android:hint="Enter restaurant name"
+                android:inputType="text"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColorHint="#999999"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@+id/tvRestaurantName" />
+
+            <!-- Date and Time -->
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Date"
+                android:textColor="#5D4E37"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/etRestaurantName" />
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Time"
+                android:textColor="#5D4E37"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/etTime"
+                app:layout_constraintTop_toBottomOf="@+id/etRestaurantName" />
+
+            <EditText
+                android:id="@+id/etDate"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/edit_text_background_beige"
                 android:drawableEnd="@drawable/ic_calendar"
                 android:focusable="false"
@@ -99,33 +138,28 @@
                 android:paddingEnd="12dp"
                 android:textColorHint="#999999"
                 android:textSize="14sp"
-                app:layout_constraintTop_toBottomOf="@+id/tvDepartureDate" />
-
-            <!-- Airline -->
-            <TextView
-                android:id="@+id/tvAirline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Airline*"
-                android:textColor="#5D4E37"
-                android:textSize="13sp"
+                app:layout_constraintEnd_toStartOf="@+id/etTime"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etDepartureDate" />
+                app:layout_constraintTop_toBottomOf="@+id/tvDate" />
 
             <EditText
-                android:id="@+id/etAirline"
-                android:layout_width="match_parent"
+                android:id="@+id/etTime"
+                android:layout_width="0dp"
                 android:layout_height="48dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/edit_text_background_beige"
-                android:hint="Enter airline"
-                android:inputType="text"
+                android:drawableEnd="@drawable/ic_time"
+                android:focusable="false"
+                android:hint="hh:mm"
+                android:inputType="none"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:textColorHint="#999999"
                 android:textSize="14sp"
-                app:layout_constraintTop_toBottomOf="@+id/tvAirline" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/etDate"
+                app:layout_constraintTop_toBottomOf="@+id/tvTime" />
 
             <!-- Expense -->
             <TextView
@@ -137,7 +171,7 @@
                 android:textColor="#5D4E37"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etAirline" />
+                app:layout_constraintTop_toBottomOf="@+id/etDate" />
 
             <EditText
                 android:id="@+id/etExpense"
@@ -153,20 +187,7 @@
                 android:textSize="14sp"
                 app:layout_constraintTop_toBottomOf="@+id/tvExpense" />
 
-            <!-- Departure Header -->
-            <TextView
-                android:id="@+id/tvDepartureHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Departure"
-                android:textColor="#6B7280"
-                android:textSize="15sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etExpense" />
-
-            <!-- Address (Departure) -->
+            <!-- Address -->
             <TextView
                 android:id="@+id/tvAddress"
                 android:layout_width="wrap_content"
@@ -176,111 +197,10 @@
                 android:textColor="#5D4E37"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDepartureHeader" />
+                app:layout_constraintTop_toBottomOf="@+id/etExpense" />
 
             <EditText
                 android:id="@+id/etAddress"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/edit_text_background_beige"
-                android:hint="Enter address"
-                android:inputType="text"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textColorHint="#999999"
-                android:textSize="14sp"
-                app:layout_constraintTop_toBottomOf="@+id/tvAddress" />
-
-            <!-- Arrival Header -->
-            <TextView
-                android:id="@+id/tvArrivalHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Arrival"
-                android:textColor="#6B7280"
-                android:textSize="15sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etAddress" />
-
-            <!-- Arrival Date and Time -->
-            <TextView
-                android:id="@+id/tvArrivalDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Arrival Date"
-                android:textColor="#5D4E37"
-                android:textSize="13sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvArrivalHeader" />
-
-            <TextView
-                android:id="@+id/tvArrivalTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Time"
-                android:textColor="#5D4E37"
-                android:textSize="13sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/etArrivalTime"
-                app:layout_constraintTop_toBottomOf="@+id/tvArrivalHeader" />
-
-            <EditText
-                android:id="@+id/etArrivalDate"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/edit_text_background_beige"
-                android:drawableEnd="@drawable/ic_calendar"
-                android:focusable="false"
-                android:hint="dd/mm/yyyy"
-                android:inputType="none"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textColorHint="#999999"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toStartOf="@+id/etArrivalTime"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvArrivalDate" />
-
-            <EditText
-                android:id="@+id/etArrivalTime"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/edit_text_background_beige"
-                android:drawableEnd="@drawable/ic_time"
-                android:focusable="false"
-                android:hint="hh:mm"
-                android:inputType="none"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textColorHint="#999999"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/etArrivalDate"
-                app:layout_constraintTop_toBottomOf="@+id/tvArrivalTime" />
-
-            <!-- Arrival Address -->
-            <TextView
-                android:id="@+id/tvArrivalAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Address"
-                android:textColor="#5D4E37"
-                android:textSize="13sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etArrivalDate" />
-
-            <EditText
-                android:id="@+id/etArrivalAddress"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
@@ -293,7 +213,7 @@
                 android:textColorHint="#999999"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvArrivalAddress" />
+                app:layout_constraintTop_toBottomOf="@+id/tvAddress" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

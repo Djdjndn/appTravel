@@ -11,7 +11,6 @@ import com.datn.apptravel.ui.adapter.ScheduleDayAdapter
 import com.datn.apptravel.ui.fragment.TripsFragment
 import com.datn.apptravel.ui.planselection.PlanSelectionActivity
 import com.datn.apptravel.ui.viewmodel.TripDetailViewModel
-import com.datn.apptravel.util.Trip
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TripDetailActivity : AppCompatActivity() {
@@ -83,6 +82,11 @@ class TripDetailActivity : AppCompatActivity() {
             updateUI(trip)
         }
         
+        // Observe error messages
+        viewModel.errorMessage.observe(this) { message ->
+            android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
+        }
+        
         // Observe schedule days
         viewModel.scheduleDays.observe(this) { scheduleDays ->
             if (scheduleDays.isNotEmpty()) {
@@ -96,21 +100,27 @@ class TripDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateUI(trip: Trip?) {
+    private fun updateUI(trip: com.datn.apptravel.data.model.Trip?) {
         if (trip == null) {
-            binding.tvTitle.text = getString(R.string.app_name)
+            binding.tvTripName.text = ""
+            binding.tvTripDate.text = ""
             return
         }
         
-        // Set trip details
+        // Set trip details from API
         binding.apply {
-            tvTitle.text = trip.title
-            tvTripName.text = trip.title
-            tvTripDate.text = "${trip.startDate} - ${trip.endDate}"
-            tvTripCost.text = "75.000.000đ" // Placeholder price
+            tvTripName.text = trip.title ?: "Untitled Trip"
             
-            // If trip has an image URL, load it here
-            // For now, we'll use a placeholder
+            // Format dates
+            val startDate = trip.startDate?.toString() ?: "N/A"
+            val endDate = trip.endDate?.toString() ?: "N/A"
+            tvTripDate.text = "$startDate - $endDate"
+            
+            // Load cover photo if available
+            if (!trip.coverPhoto.isNullOrEmpty()) {
+                // TODO: Load image with Glide
+                // Glide.with(this@TripDetailActivity).load(trip.coverPhoto).into(ivTripImage)
+            }
         }
     }
 

@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
     private val GEOAPIFY_BASE_URL = BuildConfig.GEOAPIFY_BASE_URL
     private val AUTH_BASE_URL = BuildConfig.AUTH_BASE_URL
+    private val TRIP_SERVICE_BASE_URL = BuildConfig.TRIP_SERVICE_BASE_URL
     
     private const val TIMEOUT = 30L // seconds
 
@@ -42,6 +43,18 @@ object RetrofitClient {
     
     val authApiService: AuthApiService by lazy {
         authRetrofit.create(AuthApiService::class.java)
+    }
+    
+    private val tripServiceRetrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(TRIP_SERVICE_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+    
+    val tripApiService: TripApiService by lazy {
+        tripServiceRetrofit.create(TripApiService::class.java)
     }
 
     inline fun <reified T> createService(): T = retrofit.create(T::class.java)

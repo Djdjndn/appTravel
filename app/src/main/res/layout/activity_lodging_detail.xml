@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/beige_light"
     tools:context=".ui.plandetail.LodgingDetailActivity">
 
     <!-- Top Navigation Bar -->
@@ -12,8 +12,7 @@
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@android:color/white"
-        android:elevation="4dp"
+        android:background="@color/beige_light"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -36,9 +35,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:gravity="center"
             android:text="Lodging"
             android:textColor="#1F2937"
-            android:textSize="20sp"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnSave"
             app:layout_constraintStart_toEndOf="@+id/btnBack"
@@ -47,12 +48,15 @@
         <Button
             android:id="@+id/btnSave"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/blue_button_background"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:background="@drawable/button_save_orange"
             android:text="Save"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -76,21 +80,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lodging name"
-                android:textColor="#1F2937"
-                android:textSize="14sp"
+                android:textColor="#5D4E37"
+                android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
                 android:id="@+id/etLodgingName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/edit_text_background"
+                android:background="@drawable/edit_text_background_beige"
                 android:hint="Enter lodging name"
                 android:inputType="text"
-                android:padding="12dp"
-                android:textSize="16sp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColorHint="#999999"
+                android:textSize="14sp"
                 app:layout_constraintTop_toBottomOf="@+id/tvLodgingName" />
 
             <!-- Check-in Date and Time -->
@@ -100,8 +106,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Check-in Date"
-                android:textColor="#1F2937"
-                android:textSize="14sp"
+                android:textColor="#5D4E37"
+                android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etLodgingName" />
 
@@ -111,8 +117,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Time"
-                android:textColor="#1F2937"
-                android:textSize="14sp"
+                android:textColor="#5D4E37"
+                android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/etCheckInTime"
                 app:layout_constraintTop_toBottomOf="@+id/etLodgingName" />
@@ -120,16 +126,18 @@
             <EditText
                 android:id="@+id/etCheckInDate"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/edit_text_background"
+                android:background="@drawable/edit_text_background_beige"
                 android:drawableEnd="@drawable/ic_calendar"
                 android:focusable="false"
                 android:hint="dd/mm/yyyy"
                 android:inputType="none"
-                android:padding="12dp"
-                android:textSize="16sp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColorHint="#999999"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toStartOf="@+id/etCheckInTime"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvCheckInDate" />
@@ -137,16 +145,18 @@
             <EditText
                 android:id="@+id/etCheckInTime"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/edit_text_background"
+                android:background="@drawable/edit_text_background_beige"
                 android:drawableEnd="@drawable/ic_time"
                 android:focusable="false"
                 android:hint="hh:mm"
                 android:inputType="none"
-                android:padding="12dp"
-                android:textSize="16sp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColorHint="#999999"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/etCheckInDate"
                 app:layout_constraintTop_toBottomOf="@+id/tvCheckInTime" />
@@ -157,9 +167,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Checkout Date"
-                android:textColor="#1F2937"
-                android:textSize="14sp"
+                android:text="Check-out Date"
+                android:textColor="#5D4E37"
+                android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etCheckInDate" />
 
@@ -169,8 +179,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Time"
-                android:textColor="#1F2937"
-                android:textSize="14sp"
+                android:textColor="#5D4E37"
+                android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/etCheckoutTime"
                 app:layout_constraintTop_toBottomOf="@+id/etCheckInDate" />
@@ -178,16 +188,18 @@
             <EditText
                 android:id="@+id/etCheckoutDate"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/edit_text_background"
+                android:background="@drawable/edit_text_background_beige"
                 android:drawableEnd="@drawable/ic_calendar"
                 android:focusable="false"
                 android:hint="dd/mm/yyyy"
                 android:inputType="none"
-                android:padding="12dp"
-                android:textSize="16sp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColorHint="#999999"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toStartOf="@+id/etCheckoutTime"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvCheckoutDate" />
@@ -195,16 +207,18 @@
             <EditText
                 android:id="@+id/etCheckoutTime"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/edit_text_background"
+                android:background="@drawable/edit_text_background_beige"
                 android:drawableEnd="@drawable/ic_time"
                 android:focusable="false"
                 android:hint="hh:mm"
                 android:inputType="none"
-                android:padding="12dp"
-                android:textSize="16sp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColorHint="#999999"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/etCheckoutDate"
                 app:layout_constraintTop_toBottomOf="@+id/tvCheckoutTime" />
@@ -216,21 +230,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Expense"
-                android:textColor="#1F2937"
-                android:textSize="14sp"
+                android:textColor="#5D4E37"
+                android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etCheckoutDate" />
 
             <EditText
                 android:id="@+id/etExpense"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/edit_text_background"
-                android:hint="0"
+                android:background="@drawable/edit_text_background_beige"
+                android:hint="0                                                                                           đ"
                 android:inputType="number"
-                android:padding="12dp"
-                android:textSize="16sp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColorHint="#999999"
+                android:textSize="14sp"
                 app:layout_constraintTop_toBottomOf="@+id/tvExpense" />
 
             <!-- Address -->
@@ -240,21 +256,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Address"
-                android:textColor="#1F2937"
-                android:textSize="14sp"
+                android:textColor="#5D4E37"
+                android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etExpense" />
 
             <EditText
                 android:id="@+id/etAddress"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/edit_text_background"
+                android:background="@drawable/edit_text_background_beige"
                 android:hint="Enter address"
                 android:inputType="text"
-                android:padding="12dp"
-                android:textSize="16sp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColorHint="#999999"
+                android:textSize="14sp"
                 app:layout_constraintTop_toBottomOf="@+id/tvAddress" />
 
             <!-- Phone -->
@@ -264,48 +282,26 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Phone"
-                android:textColor="#1F2937"
-                android:textSize="14sp"
+                android:textColor="#5D4E37"
+                android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etAddress" />
 
             <EditText
                 android:id="@+id/etPhone"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/edit_text_background"
-                android:hint="Enter phone"
-                android:inputType="phone"
-                android:padding="12dp"
-                android:textSize="16sp"
-                app:layout_constraintTop_toBottomOf="@+id/tvPhone" />
-
-            <!-- Email -->
-            <TextView
-                android:id="@+id/tvEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Email"
-                android:textColor="#1F2937"
-                android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etPhone" />
-
-            <EditText
-                android:id="@+id/etEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="24dp"
-                android:background="@drawable/edit_text_background"
-                android:hint="Enter email"
-                android:inputType="textEmailAddress"
-                android:padding="12dp"
-                android:textSize="16sp"
+                android:background="@drawable/edit_text_background_beige"
+                android:hint="Enter phone"
+                android:inputType="phone"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColorHint="#999999"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvEmail" />
+                app:layout_constraintTop_toBottomOf="@+id/tvPhone" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

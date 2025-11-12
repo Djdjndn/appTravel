@@ -128,8 +128,7 @@ class LodgingDetailActivity : AppCompatActivity() {
                 "checkoutTime" to binding.etCheckoutTime.text.toString(),
                 "expense" to binding.etExpense.text.toString().ifEmpty { "0" },
                 "address" to binding.etAddress.text.toString(),
-                "phone" to binding.etPhone.text.toString(),
-                "email" to binding.etEmail.text.toString()
+                "phone" to binding.etPhone.text.toString()
             )
             
             viewModel.saveLodging(id, lodgingDetails.toString())

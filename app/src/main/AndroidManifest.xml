@@ -119,6 +119,24 @@
             android:exported="false"
             android:theme="@style/Theme.AppTravel.NoActionBarMain" />
             
+        <!-- Activity Detail Activity -->
+        <activity
+            android:name=".ui.plandetail.ActivityDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppTravel.NoActionBarMain" />
+            
+        <!-- Restaurant Detail Activity -->
+        <activity
+            android:name=".ui.plandetail.RestaurantDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppTravel.NoActionBarMain" />
+            
+        <!-- Car Rental Detail Activity -->
+        <activity
+            android:name=".ui.plandetail.CarRentalDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppTravel.NoActionBarMain" />
+            
     </application>
 
 </manifest>

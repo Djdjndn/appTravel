@@ -9,7 +9,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.datn.apptravel.R
+import com.datn.apptravel.data.local.SessionManager
 import com.datn.apptravel.ui.activity.MainActivity
 import com.datn.apptravel.ui.viewmodel.AuthViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -18,11 +20,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SignInActivity : AppCompatActivity() {
     
     private val viewModel: AuthViewModel by viewModel()
+    private val sessionManager: SessionManager by inject()
     private lateinit var googleSignInClient: GoogleSignInClient
     
     private val googleSignInLauncher = registerForActivityResult(
@@ -51,10 +56,13 @@ class SignInActivity : AppCompatActivity() {
         
         // Observe sign in result
         viewModel.signInResult.observe(this) { result ->
-            result.onSuccess {
+            result.onSuccess { user ->
+                // Save user ID to session
+                lifecycleScope.launch {
+                    sessionManager.saveUserId(user.id)
+                    Log.d("SignInActivity", "User ID saved to session: ${user.id}")
+                }
                 Toast.makeText(this, "Sign in successful", Toast.LENGTH_SHORT).show()
-                // Create a sample trip for testing
-                createSampleTrip()
                 // Navigate to main screen
                 navigateToMain()
             }.onFailure { error ->
@@ -64,10 +72,13 @@ class SignInActivity : AppCompatActivity() {
         
         // Observe Google sign in result
         viewModel.googleSignInResult.observe(this) { result ->
-            result.onSuccess {
+            result.onSuccess { user ->
+                // Save user ID to session
+                lifecycleScope.launch {
+                    sessionManager.saveUserId(user.id)
+                    Log.d("SignInActivity", "User ID saved to session: ${user.id}")
+                }
                 Toast.makeText(this, "Google sign in successful", Toast.LENGTH_SHORT).show()
-                // Create a sample trip for testing
-                createSampleTrip()
                 // Navigate to main screen
                 navigateToMain()
             }.onFailure { error ->
@@ -137,14 +148,6 @@ class SignInActivity : AppCompatActivity() {
         }
     }
     
-    /**
-     * Create a sample trip for testing
-     */
-    private fun createSampleTrip() {
-        // Create a sample trip using TripManager
-        MainActivity.tripManager.createSampleTrip()
-    }
-
     private fun navigateToMain() {
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
