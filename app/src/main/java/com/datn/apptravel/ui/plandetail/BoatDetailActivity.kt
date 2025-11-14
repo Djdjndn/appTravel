@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.datn.apptravel.data.model.PlanType
-import com.datn.apptravel.data.model.request.CreatePlanRequest
+import com.datn.apptravel.data.model.request.CreateBoatPlanRequest
 import com.datn.apptravel.data.repository.TripRepository
 import com.datn.apptravel.databinding.ActivityBoatDetailBinding
 import kotlinx.coroutines.launch
@@ -20,6 +20,8 @@ class BoatDetailActivity : AppCompatActivity() {
     private var tripId: String? = null
     private var tripStartDate: String? = null
     private var tripEndDate: String? = null
+    private var placeLatitude: Double = 0.0
+    private var placeLongitude: Double = 0.0
     private lateinit var binding: ActivityBoatDetailBinding
     private val tripRepository: TripRepository by inject()
     
@@ -40,11 +42,11 @@ class BoatDetailActivity : AppCompatActivity() {
             }
         }
         
-        // Get place data from intent
-        val placeName = intent.getStringExtra("placeName")
-        val placeAddress = intent.getStringExtra("placeAddress")
-        
-        // Pre-fill place data
+    // Get place data from intent
+    val placeName = intent.getStringExtra("placeName")
+    val placeAddress = intent.getStringExtra("placeAddress")
+    placeLatitude = intent.getDoubleExtra("placeLatitude", 0.0)
+    placeLongitude = intent.getDoubleExtra("placeLongitude", 0.0)        // Pre-fill place data
         placeName?.let { binding.etBoatName.setText(it) }
         placeAddress?.let { binding.etDepartureLocation.setText(it) }
         
@@ -124,24 +126,29 @@ class BoatDetailActivity : AppCompatActivity() {
             val startTimeISO = convertDateTimeStringToISO(departureDateTime)
             val endTimeISO = convertDateTimeStringToISO(arrivalDateTime)
             
-            val request = CreatePlanRequest(
+            val request = CreateBoatPlanRequest(
                 tripId = id,
                 title = binding.etBoatName.text.toString(),
                 address = binding.etDepartureLocation.text.toString(),
-                location = null, // Will be geocoded from address
+                location = if (placeLatitude != 0.0 && placeLongitude != 0.0) {
+                    "$placeLatitude,$placeLongitude"
+                } else null,
                 startTime = startTimeISO,
                 endTime = endTimeISO,
                 expense = binding.etExpense.text.toString().toDoubleOrNull(),
                 photoUrl = null,
-                type = PlanType.BOAT.name
+                type = PlanType.BOAT.name,
+                arrivalTime = endTimeISO,
+                arrivalLocation = binding.etArrivalLocation.text.toString().takeIf { it.isNotEmpty() },
+                arrivalAddress = null  // Not available in layout
             )
             
-            Log.d("BoatDetail", "Creating plan for tripId: $id")
+            Log.d("BoatDetail", "Creating boat plan for tripId: $id")
             Log.d("BoatDetail", "Request: $request")
             
             lifecycleScope.launch {
                 try {
-                    val result = tripRepository.createPlan(id, request)
+                    val result = tripRepository.createBoatPlan(id, request)
                     result.onSuccess { plan ->
                         Log.d("BoatDetail", "Plan created successfully: ${plan.id}")
                         Toast.makeText(this@BoatDetailActivity, "Boat saved", Toast.LENGTH_SHORT).show()

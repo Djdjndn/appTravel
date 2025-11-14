@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.datn.apptravel.data.model.PlanType
-import com.datn.apptravel.data.model.request.CreatePlanRequest
+import com.datn.apptravel.data.model.request.CreateCarRentalPlanRequest
 import com.datn.apptravel.data.repository.TripRepository
 import com.datn.apptravel.databinding.ActivityCarRentalDetailBinding
 import kotlinx.coroutines.launch
@@ -21,6 +21,8 @@ class CarRentalDetailActivity : AppCompatActivity() {
     private var tripId: String? = null
     private var tripStartDate: String? = null
     private var tripEndDate: String? = null
+    private var placeLatitude: Double = 0.0
+    private var placeLongitude: Double = 0.0
     private val tripRepository: TripRepository by inject()
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +45,8 @@ class CarRentalDetailActivity : AppCompatActivity() {
         // Get place data from intent
         val placeName = intent.getStringExtra("placeName")
         val placeAddress = intent.getStringExtra("placeAddress")
+        placeLatitude = intent.getDoubleExtra("placeLatitude", 0.0)
+        placeLongitude = intent.getDoubleExtra("placeLongitude", 0.0)
         
         // Pre-fill place data
         placeName?.let { binding.etRentalAgency.setText(it) }
@@ -131,24 +135,29 @@ class CarRentalDetailActivity : AppCompatActivity() {
             val startTimeISO = convertDateTimeToISO(pickupDate, pickupTime)
             val endTimeISO = convertDateTimeToISO(returnDate, returnTime)
             
-            val request = CreatePlanRequest(
+            val request = CreateCarRentalPlanRequest(
                 tripId = id,
                 title = binding.etRentalAgency.text.toString(),
                 address = binding.etPickupLocation.text.toString(),
-                location = null, // Will be geocoded from address
+                location = if (placeLatitude != 0.0 && placeLongitude != 0.0) {
+                    "$placeLatitude,$placeLongitude"
+                } else null,
                 startTime = startTimeISO,
                 endTime = endTimeISO,
                 expense = binding.etExpense.text.toString().toDoubleOrNull(),
                 photoUrl = null,
-                type = PlanType.CAR_RENTAL.name
+                type = PlanType.CAR_RENTAL.name,
+                pickupDate = startTimeISO,
+                pickupTime = startTimeISO,
+                phone = binding.etPhone.text.toString().takeIf { it.isNotEmpty() }
             )
             
-            Log.d("CarRentalDetail", "Creating plan for tripId: $id")
+            Log.d("CarRentalDetail", "Creating car rental plan for tripId: $id")
             Log.d("CarRentalDetail", "Request: $request")
             
             lifecycleScope.launch {
                 try {
-                    val result = tripRepository.createPlan(id, request)
+                    val result = tripRepository.createCarRentalPlan(id, request)
                     result.onSuccess { plan ->
                         Log.d("CarRentalDetail", "Plan created successfully: ${plan.id}")
                         Toast.makeText(this@CarRentalDetailActivity, "Car rental saved", Toast.LENGTH_SHORT).show()

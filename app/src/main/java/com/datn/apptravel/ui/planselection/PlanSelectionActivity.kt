@@ -252,6 +252,8 @@ class PlanSelectionActivity : AppCompatActivity() {
         intent.putExtra(EXTRA_TRIP_ID, tripId)
         intent.putExtra(EXTRA_PLACE_NAME, place.name)
         intent.putExtra(EXTRA_PLACE_ADDRESS, place.address)
+        intent.putExtra(EXTRA_PLACE_LATITUDE, place.latitude)
+        intent.putExtra(EXTRA_PLACE_LONGITUDE, place.longitude)
         startActivity(intent)
     }
     
@@ -260,6 +262,8 @@ class PlanSelectionActivity : AppCompatActivity() {
         const val EXTRA_TRIP_ID = "tripId"
         const val EXTRA_PLACE_NAME = "placeName"
         const val EXTRA_PLACE_ADDRESS = "placeAddress"
+        const val EXTRA_PLACE_LATITUDE = "placeLatitude"
+        const val EXTRA_PLACE_LONGITUDE = "placeLongitude"
     }
     
     /**

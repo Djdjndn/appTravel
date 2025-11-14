@@ -3,8 +3,7 @@ package com.datn.apptravel.data.api
 
 import com.datn.apptravel.data.model.Plan
 import com.datn.apptravel.data.model.Trip
-import com.datn.apptravel.data.model.request.CreatePlanRequest
-import com.datn.apptravel.data.model.request.CreateTripRequest
+import com.datn.apptravel.data.model.request.*
 import com.datn.apptravel.data.model.response.TripResponse
 import retrofit2.Response
 import retrofit2.http.*
@@ -38,10 +37,46 @@ interface TripApiService {
     ): Response<Void>
     
     // Plans endpoints
-    @POST("api/trips/{tripId}/plans")
-    suspend fun createPlan(
+//    @POST("api/trips/{tripId}/plans")
+//    suspend fun createPlan(
+//        @Path("tripId") tripId: String,
+//        @Body request: CreatePlanRequest
+//    ): Response<Plan>
+    
+    @POST("api/trips/{tripId}/plans/flight")
+    suspend fun createFlightPlan(
         @Path("tripId") tripId: String,
-        @Body request: CreatePlanRequest
+        @Body request: CreateFlightPlanRequest
+    ): Response<Plan>
+    
+    @POST("api/trips/{tripId}/plans/restaurant")
+    suspend fun createRestaurantPlan(
+        @Path("tripId") tripId: String,
+        @Body request: CreateRestaurantPlanRequest
+    ): Response<Plan>
+    
+    @POST("api/trips/{tripId}/plans/lodging")
+    suspend fun createLodgingPlan(
+        @Path("tripId") tripId: String,
+        @Body request: CreateLodgingPlanRequest
+    ): Response<Plan>
+    
+    @POST("api/trips/{tripId}/plans/activity")
+    suspend fun createActivityPlan(
+        @Path("tripId") tripId: String,
+        @Body request: CreateActivityPlanRequest
+    ): Response<Plan>
+    
+    @POST("api/trips/{tripId}/plans/boat")
+    suspend fun createBoatPlan(
+        @Path("tripId") tripId: String,
+        @Body request: CreateBoatPlanRequest
+    ): Response<Plan>
+    
+    @POST("api/trips/{tripId}/plans/car-rental")
+    suspend fun createCarRentalPlan(
+        @Path("tripId") tripId: String,
+        @Body request: CreateCarRentalPlanRequest
     ): Response<Plan>
     
     @GET("api/trips/{tripId}/plans")

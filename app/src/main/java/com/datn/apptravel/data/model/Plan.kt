@@ -1,18 +1,16 @@
 package com.datn.apptravel.data.model
 
-
-data class Plan(
-    val id: String? = null,
-    val tripId: String,
-    val title: String,
-    val address: String? = null,
-    val location: String? = null,
-    val startTime: String,          //  format: yyyy-MM-dd'T'HH:mm:ss
-    val endTime: String,            //  format: yyyy-MM-dd'T'HH:mm:ss
-    val expense: Double? = null,
-    val photoUrl: String? = null,
-    val type: PlanType,
-    val likesCount: Int = 0,        // Simplified - count instead of full list
-    val commentsCount: Int = 0,     // Simplified - count instead of full list
-    val createdAt: String? = null
+open class Plan(
+    open val id: String? = null,
+    open val tripId: String,
+    open val title: String,
+    open val address: String? = null,
+    open val location: String? = null,
+    open val startTime: String,          //  format: yyyy-MM-dd'T'HH:mm:ss
+    open val expense: Double? = null,
+    open val photoUrl: String? = null,
+    open val type: PlanType,
+    open val likesCount: Int = 0,        // Simplified - count instead of full list
+    open val commentsCount: Int = 0,     // Simplified - count instead of full list
+    open val createdAt: String? = null
 )

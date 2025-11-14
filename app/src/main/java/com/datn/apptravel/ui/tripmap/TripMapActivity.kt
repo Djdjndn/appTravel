@@ -44,7 +44,7 @@ class TripMapActivity : AppCompatActivity() {
     private var highlightedPolyline: Polyline? = null
     
     private val tripRepository: TripRepository by inject()
-    private val setZoom = 17.0
+    private val setZoom = 14.0
     private var tripId: String? = null
     private var startDate: String = ""
     private var endDate: String = ""
@@ -248,8 +248,22 @@ class TripMapActivity : AppCompatActivity() {
                         "00:00"
                     }
                     
-                    // Geocode address to get coordinates
-                    val coordinates = geocodeLocation(plan.address ?: plan.title)
+                    // Get coordinates from location field (format: "latitude,longitude")
+                    val locationStr = plan.location
+                    val coordinates = if (!locationStr.isNullOrBlank()) {
+                        try {
+                            val parts = locationStr.split(",")
+                            if (parts.size == 2) {
+                                Pair(parts[0].trim().toDouble(), parts[1].trim().toDouble())
+                            } else null
+                        } catch (e: Exception) {
+                            Log.e("TripMapActivity", "Error parsing location: $locationStr", e)
+                            null
+                        }
+                    } else {
+                        // Fallback: geocode from address if location is not available
+                        geocodeLocation(plan.address ?: plan.title)
+                    }
                     
                     if (coordinates != null) {
                         PlanLocation(
@@ -261,7 +275,7 @@ class TripMapActivity : AppCompatActivity() {
                             iconResId = getIconForPlanType(plan.type)
                         )
                     } else {
-                        Log.w("TripMapActivity", "Could not geocode: ${plan.address}")
+                        Log.w("TripMapActivity", "Could not get coordinates for: ${plan.title}")
                         null
                     }
                 } catch (e: Exception) {

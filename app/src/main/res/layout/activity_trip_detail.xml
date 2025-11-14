@@ -165,15 +165,23 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Schedule RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSchedule"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:clipToPadding="false"
-        android:paddingBottom="16dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/addPlanButtonContainer" />
+        app:layout_constraintTop_toBottomOf="@id/addPlanButtonContainer">
+        
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSchedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:paddingBottom="16dp" />
+            
+    </androidx.core.widget.NestedScrollView>
     
     <!-- Empty Plans Illustration (hidden since we have schedule) -->
     <LinearLayout

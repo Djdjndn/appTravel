@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.datn.apptravel.data.model.PlanType
-import com.datn.apptravel.data.model.request.CreatePlanRequest
+import com.datn.apptravel.data.model.request.CreateActivityPlanRequest
 import com.datn.apptravel.data.repository.TripRepository
 import com.datn.apptravel.databinding.ActivityActivityDetailBinding
 import kotlinx.coroutines.launch
@@ -21,6 +21,8 @@ class ActivityDetailActivity : AppCompatActivity() {
     private var tripId: String? = null
     private var tripStartDate: String? = null
     private var tripEndDate: String? = null
+    private var placeLatitude: Double = 0.0
+    private var placeLongitude: Double = 0.0
     private val tripRepository: TripRepository by inject()
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +45,8 @@ class ActivityDetailActivity : AppCompatActivity() {
         // Get place data from intent
         val placeName = intent.getStringExtra("placeName")
         val placeAddress = intent.getStringExtra("placeAddress")
+        placeLatitude = intent.getDoubleExtra("placeLatitude", 0.0)
+        placeLongitude = intent.getDoubleExtra("placeLongitude", 0.0)
         
         // Pre-fill place data
         placeName?.let { binding.etEventName.setText(it) }
@@ -107,11 +111,13 @@ class ActivityDetailActivity : AppCompatActivity() {
             val startTimeISO = convertDateToISO(startDate, "12:00")
             val endTimeISO = convertDateToISO(endDate, "18:00")
             
-            val request = CreatePlanRequest(
+            val request = CreateActivityPlanRequest(
                 tripId = id,
                 title = binding.etEventName.text.toString(),
                 address = binding.etAddress.text.toString(),
-                location = null, // Will be geocoded from address
+                location = if (placeLatitude != 0.0 && placeLongitude != 0.0) {
+                    "$placeLatitude,$placeLongitude"
+                } else null,
                 startTime = startTimeISO,
                 endTime = endTimeISO,
                 expense = binding.etExpense.text.toString().toDoubleOrNull(),
@@ -119,12 +125,12 @@ class ActivityDetailActivity : AppCompatActivity() {
                 type = PlanType.ACTIVITY.name
             )
             
-            Log.d("ActivityDetail", "Creating plan for tripId: $id")
+            Log.d("ActivityDetail", "Creating activity plan for tripId: $id")
             Log.d("ActivityDetail", "Request: $request")
             
             lifecycleScope.launch {
                 try {
-                    val result = tripRepository.createPlan(id, request)
+                    val result = tripRepository.createActivityPlan(id, request)
                     result.onSuccess { plan ->
                         Log.d("ActivityDetail", "Plan created successfully: ${plan.id}")
                         Toast.makeText(this@ActivityDetailActivity, "Activity saved", Toast.LENGTH_SHORT).show()

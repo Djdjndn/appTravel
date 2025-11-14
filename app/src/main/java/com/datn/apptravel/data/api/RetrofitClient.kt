@@ -40,10 +40,7 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-    
-    val authApiService: AuthApiService by lazy {
-        authRetrofit.create(AuthApiService::class.java)
-    }
+
     
     private val tripServiceRetrofit: Retrofit by lazy {
         Retrofit.Builder()

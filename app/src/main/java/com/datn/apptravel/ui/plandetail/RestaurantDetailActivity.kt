@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.datn.apptravel.data.model.PlanType
-import com.datn.apptravel.data.model.request.CreatePlanRequest
+import com.datn.apptravel.data.model.request.CreateRestaurantPlanRequest
 import com.datn.apptravel.data.repository.TripRepository
 import com.datn.apptravel.databinding.ActivityRestaurantDetailBinding
 import kotlinx.coroutines.launch
@@ -21,6 +21,8 @@ class RestaurantDetailActivity : AppCompatActivity() {
     private var tripId: String? = null
     private var tripStartDate: String? = null
     private var tripEndDate: String? = null
+    private var placeLatitude: Double = 0.0
+    private var placeLongitude: Double = 0.0
     private val tripRepository: TripRepository by inject()
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +45,8 @@ class RestaurantDetailActivity : AppCompatActivity() {
         // Get place data from intent
         val placeName = intent.getStringExtra("placeName")
         val placeAddress = intent.getStringExtra("placeAddress")
+        placeLatitude = intent.getDoubleExtra("placeLatitude", 0.0)
+        placeLongitude = intent.getDoubleExtra("placeLongitude", 0.0)
         
         // Pre-fill place data
         placeName?.let { binding.etRestaurantName.setText(it) }
@@ -119,24 +123,28 @@ class RestaurantDetailActivity : AppCompatActivity() {
             val startTimeISO = convertToISO(date, time)
             val endTimeISO = convertToISO(date, addOneHour(time))
             
-            val request = CreatePlanRequest(
+            val request = CreateRestaurantPlanRequest(
                 tripId = id,
                 title = binding.etRestaurantName.text.toString(),
                 address = binding.etAddress.text.toString(),
-                location = null, // Will be geocoded from address
+                location = if (placeLatitude != 0.0 && placeLongitude != 0.0) {
+                    "$placeLatitude,$placeLongitude"
+                } else null,
                 startTime = startTimeISO,
                 endTime = endTimeISO,
                 expense = binding.etExpense.text.toString().toDoubleOrNull(),
                 photoUrl = null,
-                type = PlanType.RESTAURANT.name
+                type = PlanType.RESTAURANT.name,
+                reservationDate = startTimeISO,
+                reservationTime = startTimeISO
             )
             
-            Log.d("RestaurantDetail", "Creating plan for tripId: $id")
+            Log.d("RestaurantDetail", "Creating restaurant plan for tripId: $id")
             Log.d("RestaurantDetail", "Request: $request")
             
             lifecycleScope.launch {
                 try {
-                    val result = tripRepository.createPlan(id, request)
+                    val result = tripRepository.createRestaurantPlan(id, request)
                     result.onSuccess { plan ->
                         Log.d("RestaurantDetail", "Plan created successfully: ${plan.id}")
                         Toast.makeText(this@RestaurantDetailActivity, "Restaurant saved", Toast.LENGTH_SHORT).show()

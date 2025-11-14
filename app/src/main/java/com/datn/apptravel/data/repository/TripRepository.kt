@@ -3,8 +3,7 @@ package com.datn.apptravel.data.repository
 import com.datn.apptravel.data.api.TripApiService
 import com.datn.apptravel.data.model.Plan
 import com.datn.apptravel.data.model.Trip
-import com.datn.apptravel.data.model.request.CreatePlanRequest
-import com.datn.apptravel.data.model.request.CreateTripRequest
+import com.datn.apptravel.data.model.request.*
 
 class TripRepository(private val tripApiService: TripApiService) {
     
@@ -93,18 +92,126 @@ class TripRepository(private val tripApiService: TripApiService) {
     }
     
     // Plan methods
-    suspend fun createPlan(tripId: String, request: CreatePlanRequest): Result<Plan> {
+//    suspend fun createPlan(tripId: String, request: CreatePlanRequest): Result<Plan> {
+//        return try {
+//            val response = tripApiService.createPlan(tripId, request)
+//            if (response.isSuccessful) {
+//                val plan = response.body()
+//                if (plan != null) {
+//                    Result.success(plan)
+//                } else {
+//                    Result.failure(Exception("Plan data is null"))
+//                }
+//            } else {
+//                Result.failure(Exception("Failed to create plan"))
+//            }
+//        } catch (e: Exception) {
+//            Result.failure(e)
+//        }
+//    }
+    
+    suspend fun createFlightPlan(tripId: String, request: CreateFlightPlanRequest): Result<Plan> {
         return try {
-            val response = tripApiService.createPlan(tripId, request)
+            val response = tripApiService.createFlightPlan(tripId, request)
             if (response.isSuccessful) {
                 val plan = response.body()
                 if (plan != null) {
                     Result.success(plan)
                 } else {
-                    Result.failure(Exception("Plan data is null"))
+                    Result.failure(Exception("Flight plan data is null"))
                 }
             } else {
-                Result.failure(Exception("Failed to create plan"))
+                Result.failure(Exception("Failed to create flight plan"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun createRestaurantPlan(tripId: String, request: CreateRestaurantPlanRequest): Result<Plan> {
+        return try {
+            val response = tripApiService.createRestaurantPlan(tripId, request)
+            if (response.isSuccessful) {
+                val plan = response.body()
+                if (plan != null) {
+                    Result.success(plan)
+                } else {
+                    Result.failure(Exception("Restaurant plan data is null"))
+                }
+            } else {
+                Result.failure(Exception("Failed to create restaurant plan"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun createLodgingPlan(tripId: String, request: CreateLodgingPlanRequest): Result<Plan> {
+        return try {
+            val response = tripApiService.createLodgingPlan(tripId, request)
+            if (response.isSuccessful) {
+                val plan = response.body()
+                if (plan != null) {
+                    Result.success(plan)
+                } else {
+                    Result.failure(Exception("Lodging plan data is null"))
+                }
+            } else {
+                Result.failure(Exception("Failed to create lodging plan"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun createActivityPlan(tripId: String, request: CreateActivityPlanRequest): Result<Plan> {
+        return try {
+            val response = tripApiService.createActivityPlan(tripId, request)
+            if (response.isSuccessful) {
+                val plan = response.body()
+                if (plan != null) {
+                    Result.success(plan)
+                } else {
+                    Result.failure(Exception("Activity plan data is null"))
+                }
+            } else {
+                Result.failure(Exception("Failed to create activity plan"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun createBoatPlan(tripId: String, request: CreateBoatPlanRequest): Result<Plan> {
+        return try {
+            val response = tripApiService.createBoatPlan(tripId, request)
+            if (response.isSuccessful) {
+                val plan = response.body()
+                if (plan != null) {
+                    Result.success(plan)
+                } else {
+                    Result.failure(Exception("Boat plan data is null"))
+                }
+            } else {
+                Result.failure(Exception("Failed to create boat plan"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun createCarRentalPlan(tripId: String, request: CreateCarRentalPlanRequest): Result<Plan> {
+        return try {
+            val response = tripApiService.createCarRentalPlan(tripId, request)
+            if (response.isSuccessful) {
+                val plan = response.body()
+                if (plan != null) {
+                    Result.success(plan)
+                } else {
+                    Result.failure(Exception("Car rental plan data is null"))
+                }
+            } else {
+                Result.failure(Exception("Failed to create car rental plan"))
             }
         } catch (e: Exception) {
             Result.failure(e)

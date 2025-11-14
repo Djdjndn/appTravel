@@ -72,27 +72,19 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:background="@android:color/white"
             android:paddingTop="16dp"
             android:paddingBottom="16dp">
 
             <!-- Schedule Title -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#1F2937"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="12dp" />
 
             <!-- Horizontal RecyclerView with Start/End dates -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPlans"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"

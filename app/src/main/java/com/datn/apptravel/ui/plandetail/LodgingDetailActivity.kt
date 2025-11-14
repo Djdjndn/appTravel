@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.datn.apptravel.data.model.PlanType
-import com.datn.apptravel.data.model.request.CreatePlanRequest
+import com.datn.apptravel.data.model.request.CreateLodgingPlanRequest
 import com.datn.apptravel.data.repository.TripRepository
 import com.datn.apptravel.databinding.ActivityLodgingDetailBinding
 import kotlinx.coroutines.launch
@@ -20,6 +20,8 @@ class LodgingDetailActivity : AppCompatActivity() {
     private var tripId: String? = null
     private var tripStartDate: String? = null
     private var tripEndDate: String? = null
+    private var placeLatitude: Double = 0.0
+    private var placeLongitude: Double = 0.0
     private lateinit var binding: ActivityLodgingDetailBinding
     private val tripRepository: TripRepository by inject()
     
@@ -40,11 +42,11 @@ class LodgingDetailActivity : AppCompatActivity() {
             }
         }
         
-        // Get place data from intent
-        val placeName = intent.getStringExtra("placeName")
-        val placeAddress = intent.getStringExtra("placeAddress")
-        
-        // Pre-fill place data
+    // Get place data from intent
+    val placeName = intent.getStringExtra("placeName")
+    val placeAddress = intent.getStringExtra("placeAddress")
+    placeLatitude = intent.getDoubleExtra("placeLatitude", 0.0)
+    placeLongitude = intent.getDoubleExtra("placeLongitude", 0.0)        // Pre-fill place data
         placeName?.let { binding.etLodgingName.setText(it) }
         placeAddress?.let { binding.etAddress.setText(it) }
         
@@ -151,24 +153,29 @@ class LodgingDetailActivity : AppCompatActivity() {
             val startTimeISO = convertDateTimeToISO(checkInDate, checkInTime)
             val endTimeISO = convertDateTimeToISO(checkoutDate, checkoutTime)
             
-            val request = CreatePlanRequest(
+            val request = CreateLodgingPlanRequest(
                 tripId = id,
                 title = binding.etLodgingName.text.toString(),
                 address = binding.etAddress.text.toString(),
-                location = null, // Will be geocoded from address
+                location = if (placeLatitude != 0.0 && placeLongitude != 0.0) {
+                    "$placeLatitude,$placeLongitude"
+                } else null,
                 startTime = startTimeISO,
                 endTime = endTimeISO,
                 expense = binding.etExpense.text.toString().toDoubleOrNull(),
                 photoUrl = null,
-                type = PlanType.LODGING.name
+                type = PlanType.LODGING.name,
+                checkInDate = startTimeISO,
+                checkOutDate = endTimeISO,
+                phone = binding.etPhone.text.toString().takeIf { it.isNotEmpty() }
             )
             
-            Log.d("LodgingDetail", "Creating plan for tripId: $id")
+            Log.d("LodgingDetail", "Creating lodging plan for tripId: $id")
             Log.d("LodgingDetail", "Request: $request")
             
             lifecycleScope.launch {
                 try {
-                    val result = tripRepository.createPlan(id, request)
+                    val result = tripRepository.createLodgingPlan(id, request)
                     result.onSuccess { plan ->
                         Log.d("LodgingDetail", "Plan created successfully: ${plan.id}")
                         Toast.makeText(this@LodgingDetailActivity, "Lodging saved", Toast.LENGTH_SHORT).show()
