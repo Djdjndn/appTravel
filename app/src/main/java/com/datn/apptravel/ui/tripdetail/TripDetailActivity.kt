@@ -6,17 +6,31 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.datn.apptravel.R
+import com.datn.apptravel.data.model.TopicSelection
+import com.datn.apptravel.data.model.Trip
+import com.datn.apptravel.data.model.TripTopic
+import com.datn.apptravel.data.model.request.CreateTripRequest
+import com.datn.apptravel.data.repository.TripRepository
 import com.datn.apptravel.databinding.ActivityTripDetailBinding
+import com.datn.apptravel.databinding.DialogShareTripBinding
 import com.datn.apptravel.ui.adapter.ScheduleDayAdapter
+import com.datn.apptravel.ui.adapter.TopicAdapter
 import com.datn.apptravel.ui.fragment.TripsFragment
 import com.datn.apptravel.ui.planselection.PlanSelectionActivity
 import com.datn.apptravel.ui.viewmodel.TripDetailViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TripDetailActivity : AppCompatActivity() {
     
     private val viewModel: TripDetailViewModel by viewModel()
+    private val tripRepository: TripRepository by inject()
     private var tripId: String? = null
+    private var currentTrip: Trip? = null
     private lateinit var binding: ActivityTripDetailBinding
     private lateinit var scheduleDayAdapter: ScheduleDayAdapter
     
@@ -68,11 +82,9 @@ class TripDetailActivity : AppCompatActivity() {
             navigateToPlanSelection()
         }
         
-        // Setup save button
-        binding.btnSaveTrip.setOnClickListener {
-            // Toggle save state
-            // For now, just show a toast
-            android.widget.Toast.makeText(this, "Trip saved!", android.widget.Toast.LENGTH_SHORT).show()
+        // Setup share button
+        binding.btnShareTrip.setOnClickListener {
+            showShareDialog()
         }
         
         // Setup schedule RecyclerView
@@ -90,6 +102,7 @@ class TripDetailActivity : AppCompatActivity() {
     private fun setupObservers() {
         // Observe trip details
         viewModel.tripDetails.observe(this) { trip ->
+            currentTrip = trip
             updateUI(trip)
         }
         
@@ -174,6 +187,120 @@ class TripDetailActivity : AppCompatActivity() {
             }
             .setNegativeButton("Cancel", null)
             .show()
+    }
+    
+    private fun showShareDialog() {
+        val dialog = android.app.Dialog(this)
+        val dialogBinding = DialogShareTripBinding.inflate(layoutInflater)
+        
+        dialog.setContentView(dialogBinding.root)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setLayout(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        
+        // Create topic list with all available topics
+        val topicSelections = listOf(
+            TopicSelection(TripTopic.CUISINE, false),
+            TopicSelection(TripTopic.DESTINATION, false),
+            TopicSelection(TripTopic.ADVENTURE, false),
+            TopicSelection(TripTopic.RESORT, false)
+        )
+        
+        // Setup topics RecyclerView
+        val topicAdapter = TopicAdapter(topicSelections) { topic, isChecked ->
+            // Handle topic selection
+            android.util.Log.d("TripDetail", "Topic ${topic.topic.topicName} selected: $isChecked")
+        }
+        
+        dialogBinding.rvTopics.apply {
+            adapter = topicAdapter
+            layoutManager = androidx.recyclerview.widget.GridLayoutManager(this@TripDetailActivity, 2)
+            setHasFixedSize(true)
+        }
+        
+        // Handle close button
+        dialogBinding.btnClose.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        // Handle done button
+        dialogBinding.btnDone.setOnClickListener {
+            val feelings = dialogBinding.etFeelings.text.toString().trim()
+            val selectedTopics = topicSelections.filter { it.isSelected }
+            
+            if (selectedTopics.isEmpty()) {
+                android.widget.Toast.makeText(
+                    this,
+                    "Vui lòng chọn ít nhất một chủ đề",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            } else if (currentTrip == null) {
+                android.widget.Toast.makeText(
+                    this,
+                    "Không tìm thấy thông tin chuyến đi",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                // Prepare data for sharing
+                val tags = selectedTopics.joinToString(",") { it.topic.topicName }
+                
+                // Call API to update trip
+                shareTrip(feelings, tags, dialog)
+            }
+        }
+        
+        dialog.show()
+    }
+    
+    private fun shareTrip(content: String, tags: String, dialog: android.app.Dialog) {
+        currentTrip?.let { trip ->
+            val updateRequest = CreateTripRequest(
+                userId = trip.userId,
+                title = trip.title,
+                startDate = trip.startDate,
+                endDate = trip.endDate,
+                isPublic = true,  // Set to public when sharing
+                coverPhoto = trip.coverPhoto,
+                content = content.ifEmpty { trip.content },  // Use new feelings or keep old
+                tags = tags  // New selected topics
+            )
+            
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val result = tripRepository.updateTrip(trip.id ?: "", updateRequest)
+                    
+                    withContext(Dispatchers.Main) {
+                        if (result.isSuccess) {
+                            android.widget.Toast.makeText(
+                                this@TripDetailActivity,
+                                "Đã chia sẻ chuyến đi với chủ đề: $tags",
+                                android.widget.Toast.LENGTH_LONG
+                            ).show()
+                            dialog.dismiss()
+                            
+                            // Reload trip data
+                            loadTripData()
+                        } else {
+                            android.widget.Toast.makeText(
+                                this@TripDetailActivity,
+                                "Lỗi: ${result.exceptionOrNull()?.message}",
+                                android.widget.Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        android.widget.Toast.makeText(
+                            this@TripDetailActivity,
+                            "Lỗi kết nối: ${e.message}",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
     }
 
     private fun navigateToPlanSelection() {

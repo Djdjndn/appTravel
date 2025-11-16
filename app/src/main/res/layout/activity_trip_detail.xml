@@ -142,17 +142,18 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnSaveTrip"
+            app:layout_constraintEnd_toStartOf="@+id/btnShareTrip"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        
         <ImageButton
-            android:id="@+id/btnSaveTrip"
+            android:id="@+id/btnShareTrip"
             android:layout_width="70dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:background="@drawable/bg_date_tab_unselected"
-        android:contentDescription="Save trip"
+        android:contentDescription="Share trip"
         app:srcCompat="@drawable/ic_share"
         android:scaleType="centerInside"
         android:adjustViewBounds="true"
