@@ -40,7 +40,7 @@ class DiscoverFragment : Fragment() {
         // Setup ViewPager
         viewPager.adapter = DiscoverPagerAdapter(this)
 
-        val tabTitles = arrayOf("Random", "Following")
+        val tabTitles = arrayOf("Explore", "Following")
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
